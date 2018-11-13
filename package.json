@@ -13,6 +13,7 @@
     "test": "jest --watch --env=jsdom",
     "coverage": "jest --coverage",
     "start": "webpack --watch & npm run storybook",
+    "build:watch": "webpack --watch & webpack -p",
     "build": "webpack -p",
     "push": "npm run build && npm publish",
     "storybook": "start-storybook -p 6006",

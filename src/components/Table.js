@@ -82,15 +82,15 @@ export class Table extends Component {
         this.resizeTable();
     }
 
-    componentWillReceiveProps({ rows }){
+    componentWillReceiveProps({ rows, currentPage, totalPages }){
         this.setState(currentState => {
             return {
                 ...currentState,
                 rows,
                 pagination: {
                     ...currentState.pagination,
-                    currentPage: 1,
-                    totalPages: (rows.length === 0) ? 1 : Math.ceil(rows.length / currentState.pagination.rowSize)
+                    currentPage: currentPage || 1,
+                    totalPages: totalPages || ((rows.length === 0) ? 1 : Math.ceil(rows.length / currentState.pagination.rowSize))
                 }
             }
         })
@@ -113,15 +113,28 @@ export class Table extends Component {
     }
 
     nextPage() {
-        this.setState(currentState => {
-            return nextPage({ state: currentState })
-        });
+        if (!this.props.updateData) {
+            this.setState(currentState => {
+                return nextPage({ state: currentState })
+            });
+            return 
+        }
+
+        const { currentPage, totalPages } = this.state.pagination;
+        if (currentPage < totalPages) this.props.updateData({page: currentPage + 1});
+
     };
 
     previousPage() {
-        this.setState(currentState => {
-            return previousPage({ state: currentState })
-        });
+        if (!this.props.updateData) {
+            this.setState(currentState => {
+                return previousPage({ state: currentState })
+            });
+            return
+        }
+
+        const { currentPage } = this.state.pagination;
+        if (currentPage > 1) this.props.updateData({page: currentPage - 1});
     };
 
     goToPage({ newPage, charCode, target }) {
@@ -162,8 +175,10 @@ export class Table extends Component {
             icons,
             id,
             theme,
+            rows
         } = this.state;
-        const displayedRows = calculateRows({ state: this.state });
+        const { updateData } = this.props;
+        const displayedRows = !!updateData ? rows : calculateRows({ state: this.state });
         const visibleColumns = Object.assign([], columns.filter(column => column.isVisible));
         const hiddenColumns = Object.assign([], columns.filter(column => !column.isVisible));
 
