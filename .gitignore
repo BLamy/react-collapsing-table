@@ -7,7 +7,6 @@
 /coverage
 
 # production
-# Removing exclusion for build folder while serving from github
 /build
 
 # misc

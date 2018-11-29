@@ -83,11 +83,11 @@ export class Table extends Component {
     }
 
     componentWillReceiveProps(props){
-        console.log('new)')
+        const { pagination } = this.state
         const {
             rows = [],
             currentPage = 1,
-            totalPages = ((rows.length === 0) ? 1 : Math.ceil(rows.length / currentState.pagination.rowSize))
+            totalPages = ((rows.length === 0) ? 1 : Math.ceil(rows.length / pagination.rowSize))
         } = props
         this.setState(currentState => {
             return {
