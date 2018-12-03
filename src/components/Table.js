@@ -35,7 +35,8 @@ export class Table extends Component {
             CustomPagination = null,
             icons = null,
             id = null,
-            theme = 'react-collapsible-theme'
+            theme = 'react-collapsible-theme',
+            useContainerWidth = false
         } = props;
 
         this.state = {
@@ -49,6 +50,7 @@ export class Table extends Component {
                 currentPage,
                 inputtedPage: currentPage,
                 totalPages,
+                isServerPagination: totalPages != null
             },
             sort: {
                 column,
@@ -62,6 +64,7 @@ export class Table extends Component {
             icons,
             id,
             theme,
+            useContainerWidth
         };
 
         this.resizeTable = this.resizeTable.bind(this);
@@ -72,6 +75,8 @@ export class Table extends Component {
         this.expandRow = this.expandRow.bind(this);
         this.searchRows = this.searchRows.bind(this);
         this.clearSearch = this.clearSearch.bind(this);
+
+        this.tableRef = React.createRef();
     }
 
     componentWillMount(){
@@ -90,7 +95,8 @@ export class Table extends Component {
                 pagination: {
                     ...currentState.pagination,
                     currentPage: currentPage || 1,
-                    totalPages: totalPages || ((rows.length === 0) ? 1 : Math.ceil(rows.length / currentState.pagination.rowSize))
+                    totalPages: totalPages || ((rows.length === 0) ? 1 : Math.ceil(rows.length / currentState.pagination.rowSize)),
+                    isServerPagination: totalPages != null
                 }
             }
         })
@@ -101,8 +107,13 @@ export class Table extends Component {
     }
 
     resizeTable() {
+        const { useContainerWidth } = this.state
+
+        const width = useContainerWidth ? this.tableRef.current.getBoundingClientRect().width
+                                : window.width
+
         this.setState(currentState => {
-            return resizeTable({ width: window.innerWidth, state: currentState })
+            return resizeTable({ width, state: currentState })
         })
     };
 
@@ -201,7 +212,7 @@ export class Table extends Component {
                                                       clearSearch={ this.clearSearch } />;
 
         return (
-            <div className={theme}>
+            <div ref={this.tableRef} className={theme}>
                 { SearchComponent }
                 <table className="react-collapsible" id={ id }>
                     <Columns icons={ icons }
