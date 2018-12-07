@@ -107,14 +107,14 @@ export class Table extends Component {
     }
 
     resizeTable() {
-        const { useContainerWidth } = this.state
+        const { useContainerWidth } = this.state;
 
         const width = useContainerWidth ? this.tableRef.current.getBoundingClientRect().width
-                                : window.width
+                                : window.width;
 
         this.setState(currentState => {
             return resizeTable({ width, state: currentState })
-        })
+        });
     };
 
     sortRows({ column }) {
@@ -183,13 +183,13 @@ export class Table extends Component {
             showSearch,
             showPagination,
             CustomPagination,
+            isServerPagination,
             icons,
             id,
             theme,
             rows
         } = this.state;
-        const { updateData } = this.props;
-        const displayedRows = !!updateData ? rows : calculateRows({ state: this.state });
+        const displayedRows = isServerPagination ? rows : calculateRows({ state: this.state });
         const visibleColumns = Object.assign([], columns.filter(column => column.isVisible));
         const hiddenColumns = Object.assign([], columns.filter(column => !column.isVisible));
 
