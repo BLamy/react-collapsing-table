@@ -49,6 +49,7 @@ export class Table extends Component {
                 currentPage,
                 inputtedPage: currentPage,
                 totalPages,
+                isServerPagination: totalPages != null
             },
             sort: {
                 column,
@@ -96,7 +97,8 @@ export class Table extends Component {
                 pagination: {
                     ...currentState.pagination,
                     currentPage,
-                    totalPages
+                    totalPages,
+                    isServerPagination: totalPages != null
                 }
             }
         })
@@ -173,7 +175,7 @@ export class Table extends Component {
     render(){
         const {
             columns,
-            pagination: { currentPage, totalPages, inputtedPage },
+            pagination: { currentPage, totalPages, inputtedPage, isServerPagination },
             callbacks,
             showSearch,
             showPagination,
@@ -183,8 +185,7 @@ export class Table extends Component {
             theme,
             rows
         } = this.state;
-        const { updateData } = this.props;
-        const displayedRows = !!updateData ? rows : calculateRows({ state: this.state });
+        const displayedRows = isServerPagination ? rows : calculateRows({ state: this.state });
         const visibleColumns = Object.assign([], columns.filter(column => column.isVisible));
         const hiddenColumns = Object.assign([], columns.filter(column => !column.isVisible));
 

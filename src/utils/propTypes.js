@@ -87,6 +87,7 @@ export const TablePropType = {
     columns: InitialColumns.isRequired,
     rowSize: number,
     currentPage: number,
+    totalPages: number,
     defaultSortColumn: string,
     column: string,
     direction: string,
