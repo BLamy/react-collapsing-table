@@ -31,7 +31,7 @@ export class Table extends Component {
             showSearch = false,
             showPagination = false,
             paginationEventListener = null,
-            totalPages = (rows.length === 0) ? 1 : Math.ceil(rows.length / rowSize),
+            totalPages,
             CustomPagination = null,
             icons = null,
             id = null,
@@ -48,7 +48,7 @@ export class Table extends Component {
                 rowSize,
                 currentPage,
                 inputtedPage: currentPage,
-                totalPages,
+                totalPages: totalPages || ((rows.length === 0) ? 1 : Math.ceil(rows.length / rowSize)),
                 isServerPagination: totalPages != null
             },
             sort: {
@@ -83,21 +83,15 @@ export class Table extends Component {
         this.resizeTable();
     }
 
-    componentWillReceiveProps(props){
-        const { pagination } = this.state
-        const {
-            rows = [],
-            currentPage = 1,
-            totalPages = ((rows.length === 0) ? 1 : Math.ceil(rows.length / pagination.rowSize))
-        } = props
+    componentWillReceiveProps({ rows, currentPage, totalPages }){
         this.setState(currentState => {
             return {
                 ...currentState,
                 rows,
                 pagination: {
                     ...currentState.pagination,
-                    currentPage,
-                    totalPages,
+                    currentPage: currentPage || 1,
+                    totalPages: totalPages || ((rows.length === 0) ? 1 : Math.ceil(rows.length / currentState.pagination.rowSize)),
                     isServerPagination: totalPages != null
                 }
             }
