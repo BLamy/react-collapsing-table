@@ -31,7 +31,7 @@ export class Table extends Component {
             showSearch = false,
             showPagination = false,
             paginationEventListener = null,
-            totalPages = (rows.length === 0) ? 1 : Math.ceil(rows.length / rowSize),
+            totalPages = null,
             CustomPagination = null,
             icons = null,
             id = null,
@@ -49,7 +49,7 @@ export class Table extends Component {
                 rowSize,
                 currentPage,
                 inputtedPage: currentPage,
-                totalPages,
+                totalPages: totalPages || (rows.length === 0) ? 1 : Math.ceil(rows.length / rowSize),
                 isServerPagination: totalPages != null
             },
             sort: {
@@ -178,12 +178,11 @@ export class Table extends Component {
     render(){
         const {
             columns,
-            pagination: { currentPage, totalPages, inputtedPage },
+            pagination: { currentPage, totalPages, inputtedPage, isServerPagination },
             callbacks,
             showSearch,
             showPagination,
             CustomPagination,
-            isServerPagination,
             icons,
             id,
             theme,
