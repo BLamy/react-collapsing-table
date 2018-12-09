@@ -49,7 +49,7 @@ export class Table extends Component {
                 rowSize,
                 currentPage,
                 inputtedPage: currentPage,
-                totalPages: totalPages || (rows.length === 0) ? 1 : Math.ceil(rows.length / rowSize),
+                totalPages: totalPages || ((rows.length === 0) ? 1 : Math.ceil(rows.length / rowSize)),
                 isServerPagination: totalPages != null
             },
             sort: {
