@@ -35,7 +35,8 @@ export class Table extends Component {
             CustomPagination = null,
             icons = null,
             id = null,
-            theme = 'react-collapsible-theme'
+            theme = 'react-collapsible-theme',
+            useContainerWidth = false
         } = props;
 
         this.state = {
@@ -62,6 +63,7 @@ export class Table extends Component {
             icons,
             id,
             theme,
+            useContainerWidth,
         };
 
         this.resizeTable = this.resizeTable.bind(this);
@@ -72,10 +74,17 @@ export class Table extends Component {
         this.expandRow = this.expandRow.bind(this);
         this.searchRows = this.searchRows.bind(this);
         this.clearSearch = this.clearSearch.bind(this);
+        this.tableRef = React.createRef();
     }
 
     componentWillMount(){
         window.addEventListener('resize', throttle(this.resizeTable, 150));
+    }
+
+    componentDidUpdate(prevProps){
+        if (prevProps.isCollapsible !== this.props.isCollapsible) {
+            this.resizeTable(this.props.isCollapsible)
+        }
     }
 
     componentDidMount(){
@@ -100,9 +109,11 @@ export class Table extends Component {
         window.removeEventListener('resize', this.resizeTable);
     }
 
-    resizeTable() {
+    resizeTable(isCollapsible = true) {
+        const { useContainerWidth } = this.state;
+        const width = useContainerWidth ?this.tableRef.current.getBoundingClientRect().width : window.innerWidth;
         this.setState(currentState => {
-            return resizeTable({ width: window.innerWidth, state: currentState })
+            return resizeTable({ width, state: currentState, isCollapsible })
         })
     };
 
@@ -201,7 +212,7 @@ export class Table extends Component {
                                                       clearSearch={ this.clearSearch } />;
 
         return (
-            <div className={theme}>
+            <div ref={this.tableRef} className={theme}>
                 { SearchComponent }
                 <table className="react-collapsible" id={ id }>
                     <Columns icons={ icons }
