@@ -111,7 +111,10 @@ export class Table extends Component {
 
     resizeTable(isCollapsible = true) {
         const { useContainerWidth } = this.state;
-        const width = useContainerWidth ?this.tableRef.current.getBoundingClientRect().width : window.innerWidth;
+        let width = window.innerWidth
+        if (useContainerWidth && this.tableRef.current) {
+            width = this.tableRef.current.getBoundingClientRect().width
+        }
         this.setState(currentState => {
             return resizeTable({ width, state: currentState, isCollapsible })
         })
