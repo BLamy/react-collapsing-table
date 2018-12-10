@@ -75,12 +75,17 @@ export class Table extends Component {
         this.expandRow = this.expandRow.bind(this);
         this.searchRows = this.searchRows.bind(this);
         this.clearSearch = this.clearSearch.bind(this);
-
         this.tableRef = React.createRef();
     }
 
     componentWillMount(){
         window.addEventListener('resize', throttle(this.resizeTable, 150));
+    }
+
+    componentDidUpdate(prevProps){
+        if (prevProps.isCollapsible !== this.props.isCollapsible) {
+            this.resizeTable(this.props.isCollapsible)
+        }
     }
 
     componentDidMount(){
@@ -106,14 +111,14 @@ export class Table extends Component {
         window.removeEventListener('resize', this.resizeTable);
     }
 
-    resizeTable() {
+    resizeTable(isCollapsible = true) {
         const { useContainerWidth } = this.state;
-
-        const width = useContainerWidth ? this.tableRef.current.getBoundingClientRect().width
-                                : window.width;
-
+        let width = window.innerWidth
+        if (useContainerWidth && this.tableRef.current) {
+            width = this.tableRef.current.getBoundingClientRect().width
+        }
         this.setState(currentState => {
-            return resizeTable({ width, state: currentState })
+            return resizeTable({ width, state: currentState, isCollapsible })
         });
     };
 
