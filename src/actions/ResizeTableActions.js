@@ -18,6 +18,7 @@ export const resizeTable = ({ width, state, isCollapsible = true }) => {
     return state;
 };
 
+// Adds all hidden columns to the state irrespective of the available width
 export const addAllColumns = ({ state }) => {
     const { columns } = state;
     let hiddenColumns = Object.assign([], columns.filter(column => !column.isVisible ));
