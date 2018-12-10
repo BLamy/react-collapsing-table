@@ -8,9 +8,9 @@ export const resizeTable = ({ width, state, isCollapsible = true }) => {
     visibleColumns.map(column => visibleColumnsWidth += column.minWidth);
 
     if (isCollapsible) {
-        state = visibleColumnsWidth > width || !isCollapsible ?
-            tryToRemoveColumns({ visibleColumnsWidth, width, state }) :
-            tryToAddColumns({ visibleColumnsWidth, width, state });
+        state = visibleColumnsWidth > width ?
+                    tryToRemoveColumns({ visibleColumnsWidth, width, state }) :
+                    tryToAddColumns({ visibleColumnsWidth, width, state });
     } else {
         state = addAllColumns({ state });
     }
@@ -21,12 +21,12 @@ export const resizeTable = ({ width, state, isCollapsible = true }) => {
 // Adds all hidden columns to the state irrespective of the available width
 export const addAllColumns = ({ state }) => {
     const { columns } = state;
-    let hiddenColumns = Object.assign([], columns.filter(column => !column.isVisible ));
+    const hiddenColumns = Object.assign([], columns.filter(column => !column.isVisible));
     hiddenColumns.sort(dynamicSort({column: 'priorityLevel'}));
     
-    while(hiddenColumns.length !== 0){
+    while (hiddenColumns.length !== 0) {
         hiddenColumns.shift();
-        if(hiddenColumns.length === 0) {
+        if (hiddenColumns.length === 0) {
             state = addColumn({ state });
             state = closeAllRows({ state });
         } else {
