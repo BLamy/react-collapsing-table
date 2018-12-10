@@ -119,7 +119,7 @@ export class Table extends Component {
         }
         this.setState(currentState => {
             return resizeTable({ width, state: currentState, isCollapsible })
-        })
+        });
     };
 
     sortRows({ column }) {
