@@ -84,7 +84,7 @@ export class Table extends Component {
 
     componentDidUpdate(prevProps){
         if (prevProps.isCollapsible !== this.props.isCollapsible) {
-            this.resizeTable(this.props.isCollapsible)
+            this.resizeTable()
         }
     }
 
@@ -111,8 +111,9 @@ export class Table extends Component {
         window.removeEventListener('resize', this.resizeTable);
     }
 
-    resizeTable(isCollapsible = true) {
+    resizeTable() {
         const { useContainerWidth } = this.state;
+        const { isCollapsible } = this.props;
         let width = window.innerWidth
         if (useContainerWidth && this.tableRef.current) {
             width = this.tableRef.current.getBoundingClientRect().width
