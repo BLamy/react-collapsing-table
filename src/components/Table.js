@@ -99,7 +99,7 @@ export class Table extends Component {
                 rows,
                 pagination: {
                     ...currentState.pagination,
-                    currentPage: currentPage || 1,
+                    currentPage: currentPage ||  currentState.pagination.currentPage,
                     totalPages: totalPages || ((rows.length === 0) ? 1 : Math.ceil(rows.length / currentState.pagination.rowSize)),
                     isServerPagination: totalPages != null
                 }
