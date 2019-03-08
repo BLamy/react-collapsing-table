@@ -27,6 +27,15 @@ export const getIcon = ({ onClick, name='', size=16 }) => {
     }
 };
 
+/**
+ * Handles expand and collapse of row using Keyboard event "Enter"
+ */
+const handleKeyDown = (rowIndex, expandRow, event) => {
+    if (event && event.key === "Enter") {
+        expandRow({ rowIndex })
+    }
+}
+
 export const expandIcon = ({ cellIndex, rowIndex, row, hiddenColumnsLength, expandRow, icons }) => {
     const EXPAND_DIRECTION_ICONS = icons !== null && icons.closeRow !== undefined && icons.openRow !== undefined;
     const name = row.isOpen ? 'CloseRow' : 'OpenRow';
@@ -38,7 +47,9 @@ export const expandIcon = ({ cellIndex, rowIndex, row, hiddenColumnsLength, expa
         return getIcon({ name, onClick: () => expandRow({ rowIndex }) });
     } else if(IS_FIRST_CELL && IS_HIDDEN_COULMNS && IS_NOT_EMPTY_ROW && EXPAND_DIRECTION_ICONS){
         const rowIcon = row.isOpen ? icons.closeRow : icons.openRow;
-        return <span onClick={() => expandRow({ rowIndex })}> { rowIcon }</span>;
+        return <span 
+                onClick={() => expandRow({ rowIndex })}
+                onKeyDown={e => handleKeyDown(rowIndex, expandRow, e)}> { rowIcon }</span>;
     }
 
     return getIcon({ onClick: {}, name: 'none' });
