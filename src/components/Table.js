@@ -136,7 +136,7 @@ export class Table extends Component {
             return { ...currentState, sort: { ...currentState.sort, column: sortedColumn, direction: sortedDirection } };
         }, () => {
             const { pagination: { currentPage }, sort } = this.state
-            this.props.updateData({page: currentPage, sort: sort})
+            this.props.updateData({ page: currentPage, sort: sort })
         });
     }
 
