@@ -234,4 +234,52 @@ describe('Table', () => {
         expect(lastName.sortable).toBe(false);
         expect(email.sortable).toBe(true);
     });
+
+    describe('when server side sorting is used', () => {
+        let updateDataSpy, pagination = {}, sort = {};
+
+        beforeEach(() => {
+            updateDataSpy = jest.fn();
+            props = {
+                ...props,
+                updateData: updateDataSpy
+            };
+            wrapper = mount(<Table {...props} />)
+            instance = wrapper.instance();
+        });
+
+        describe('sortRows()', () => {
+            it('should call updateData with sort column and updated direction', () => {
+                pagination = {
+                    currentPage: 1,
+                    totalPages: 2,
+                }
+                sort = {
+                    column: 'firstName',
+                    direction: 'ascending'
+                }
+                wrapper.setState({ pagination, sort });
+                instance.sortRows({ column: 'firstName' });
+
+                expect(updateDataSpy).toHaveBeenCalledTimes(1);
+                expect(updateDataSpy).toHaveBeenCalledWith({page: pagination.currentPage, sort: {...sort, direction: 'descending'}});
+            });
+
+            it('should call updateData with updated sort column and ascending direction', () => {
+                pagination = {
+                    currentPage: 1,
+                    totalPages: 2,
+                }
+                sort = {
+                    column: 'firstName',
+                    direction: 'ascending'
+                }
+                wrapper.setState({ pagination, sort });
+                instance.sortRows({ column: 'lastName' });
+
+                expect(updateDataSpy).toHaveBeenCalledTimes(1);
+                expect(updateDataSpy).toHaveBeenCalledWith({page: pagination.currentPage, sort: {column: 'lastName', direction: 'ascending'}});
+            });
+        });
+    })
 });

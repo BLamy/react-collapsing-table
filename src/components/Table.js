@@ -128,6 +128,7 @@ export class Table extends Component {
             this.setState(currentState => {
                 return sortColumn({ column, state: currentState })
             });
+            return
         }
 
         this.setState(currentState => {
