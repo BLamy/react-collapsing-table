@@ -249,7 +249,7 @@ describe('Table', () => {
         });
 
         describe('sortRows()', () => {
-            it('should call updateData with sort column and reversed direction', () => {
+            it('should call updateData with the current sort column but the direction reversed', () => {
                 pagination = {
                     currentPage: 1,
                     totalPages: 2,
@@ -265,7 +265,7 @@ describe('Table', () => {
                 expect(updateDataSpy).toHaveBeenCalledWith({page: pagination.currentPage, sort: {...sort, direction: 'descending'}});
             });
 
-            it('should call updateData with updated sort column and the default ascending direction', () => {
+            it('should call updateData with new sort column and the default ascending direction', () => {
                 pagination = {
                     currentPage: 1,
                     totalPages: 2,
