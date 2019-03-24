@@ -760,4 +760,66 @@ describe('Table Actions', () => {
 
         expect(actions.expandRow(given)).toEqual(expected);
     });
+
+    it('should show a hidden row when using server pagination', () => {
+        const given = {
+            rowIndex: 2,
+            state: {
+                pagination: {
+                    currentPage: 1,
+                    rowSize: 15,
+                    isServerPagination: true,
+                },
+                rows: [
+                    { isOpen: false, firstName: 'Paul', },
+                    { isOpen: true, firstName: 'Matt', },
+                    { isOpen: false, firstName: 'Michelle', },
+                ],
+            }
+        };
+        const expected = {
+            pagination: {
+                currentPage: 1,
+                rowSize: 15,
+                isServerPagination: true,
+            },
+            rows: [
+                { isOpen: false, firstName: 'Paul', },
+                { isOpen: true, firstName: 'Matt', },
+                { isOpen: true, firstName: 'Michelle', },
+            ],
+        };
+        expect(actions.expandRow(given)).toEqual(expected);
+    });
+
+    it('should hide a shown row when using server pagination', () => {
+        const given = {
+            rowIndex: 2,
+            state: {
+                pagination: {
+                    currentPage: 1,
+                    rowSize: 15,
+                    isServerPagination: true,
+                },
+                rows: [
+                    { isOpen: false, firstName: 'Paul', },
+                    { isOpen: true, firstName: 'Matt', },
+                    { isOpen: true, firstName: 'Michelle', },
+                ],
+            }
+        };
+        const expected = {
+            pagination: {
+                currentPage: 1,
+                rowSize: 15,
+                isServerPagination: true,
+            },
+            rows: [
+                { isOpen: false, firstName: 'Paul', },
+                { isOpen: true, firstName: 'Matt', },
+                { isOpen: false, firstName: 'Michelle', },
+            ],
+        };
+        expect(actions.expandRow(given)).toEqual(expected);
+    });
 });
