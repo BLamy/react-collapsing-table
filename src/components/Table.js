@@ -6,7 +6,7 @@ import Search from './Search';
 import Columns from './Columns';
 import Rows from './Rows';
 import Pagination from './Pagination';
-import { calculateRows, sortColumn, nextPage, previousPage, goToPage, expandRow, setInputtedPage } from '../actions/TableActions'
+import { calculateRows, sortColumn, nextPage, previousPage, goToPage, expandRow, changeSortFieldAndDirection } from '../actions/TableActions'
 import { resizeTable } from '../actions/ResizeTableActions'
 import { searchRows, clearSearch } from '../actions/SearchActions';
 import throttle from 'lodash.throttle';
@@ -124,8 +124,19 @@ export class Table extends Component {
     };
 
     sortRows({ column }) {
+        if (!this.props.updateData) {
+            this.setState(currentState => {
+                return sortColumn({ column, state: currentState })
+            });
+            return
+        }
+
         this.setState(currentState => {
-            return sortColumn({ column, state: currentState })
+            const { sortedColumn, sortedDirection } = changeSortFieldAndDirection({ newColumn: column, state: currentState });
+            return { ...currentState, sort: { ...currentState.sort, column: sortedColumn, direction: sortedDirection } };
+        }, () => {
+            const { pagination: { currentPage }, sort } = this.state
+            this.props.updateData({ page: currentPage, sort: sort })
         });
     }
 
@@ -137,8 +148,8 @@ export class Table extends Component {
             return 
         }
 
-        const { currentPage, totalPages } = this.state.pagination;
-        if (currentPage < totalPages) this.props.updateData({page: currentPage + 1});
+        const { pagination: { currentPage, totalPages }, sort } = this.state;
+        if (currentPage < totalPages) this.props.updateData({page: currentPage + 1, sort});
 
     };
 
@@ -150,8 +161,8 @@ export class Table extends Component {
             return
         }
 
-        const { currentPage } = this.state.pagination;
-        if (currentPage > 1) this.props.updateData({page: currentPage - 1});
+        const { pagination: { currentPage }, sort } = this.state;
+        if (currentPage > 1) this.props.updateData({page: currentPage - 1, sort});
     };
 
     goToPage({ newPage, charCode, target }) {
