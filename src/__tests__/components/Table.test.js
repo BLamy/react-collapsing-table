@@ -235,6 +235,44 @@ describe('Table', () => {
         expect(email.sortable).toBe(true);
     });
 
+    it('should allow to change columns after beeing mounted', () => {
+        wrapper = mount(<Table {...props} />)
+
+        expect(wrapper.state().columns.length).toBe(3)
+        expect(wrapper.find('thead th')).toHaveLength(3)
+
+        // Change number of columns to 2
+        wrapper.setProps({ columns: props.columns.slice(1) })
+
+        expect(wrapper.state().columns.length).toBe(2)
+        expect(wrapper.find('thead th')).toHaveLength(2)
+    });
+
+    it('should be able to handle a sortable new column', () => {
+        wrapper = mount(<Table {...props} />)
+
+        expect(wrapper.state().columns.length).toBe(3)
+        expect(wrapper.find('thead th')).toHaveLength(3)
+
+        // Change number of columns to 2
+        const newColumns = [
+            ...props.columns, 
+            { 
+                accessor: 'newColumn', 
+                label: 'New Column', 
+                isVisible: true, 
+                sortable: true,
+                minWidth: 100, 
+                priorityLevel: 3, 
+                position: 1, 
+            }
+        ]
+        wrapper.setProps({ columns: newColumns })
+
+        expect(wrapper.state().columns.length).toBe(4)
+        expect(wrapper.find('thead th')).toHaveLength(4)
+    });
+
     describe('when server side sorting is used', () => {
         let updateDataSpy, pagination = {}, sort = {};
 
