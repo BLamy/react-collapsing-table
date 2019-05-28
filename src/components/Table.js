@@ -82,8 +82,12 @@ export class Table extends Component {
         window.addEventListener('resize', throttle(this.resizeTable, 150));
     }
 
-    componentDidUpdate(prevProps){
+    componentDidUpdate(prevProps, prevState){
         if (prevProps.isCollapsible !== this.props.isCollapsible) {
+            this.resizeTable()
+        }
+
+        if (prevState.columns !== this.state.columns) {
             this.resizeTable()
         }
     }
@@ -92,11 +96,15 @@ export class Table extends Component {
         this.resizeTable();
     }
 
-    componentWillReceiveProps({ rows, currentPage, totalPages }){
+    componentWillReceiveProps({ rows, columns, currentPage, totalPages }){
         this.setState(currentState => {
             return {
                 ...currentState,
                 rows,
+                columns: columns.map(column => {
+                    const sortable = column.hasOwnProperty('sortable') ? column.sortable : true;
+                    return { ...column, isVisible: true, sortable }
+                }),
                 pagination: {
                     ...currentState.pagination,
                     currentPage: currentPage ||  currentState.pagination.currentPage,
