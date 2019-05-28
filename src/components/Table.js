@@ -102,7 +102,8 @@ export class Table extends Component {
                 ...currentState,
                 rows,
                 columns: columns.map(column => {
-                    return { ...column, isVisible: true }
+                    const sortable = column.hasOwnProperty('sortable') ? column.sortable : true;
+                    return { ...column, isVisible: true, sortable }
                 }),
                 pagination: {
                     ...currentState.pagination,
