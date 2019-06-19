@@ -14,13 +14,16 @@ const Column = ({ accessor, label, sortable, onClick, sort, icons }) => {
     let headerProps = {
         key: accessor,
         onClick: sortFunction,
-        onKeyDown: e => { if (e && e.key === "Enter") sortFunction() }, //Handle sorting on 'Enter'
         className: cssClass
     }
 
-    // Make table header focussable, if sorting is enabled
+    // Make table header focussable amd add keydown handler, if sorting for the column is enabled
     if (sortable) {
-        headerProps = { ...headerProps, tabIndex: 0 }
+        headerProps = { 
+            ...headerProps, 
+            onKeyDown: e => { if (e && e.key === "Enter") sortFunction() }, //Handle sorting on 'Enter',
+            tabIndex: 0
+        }
     }
 
     return (
