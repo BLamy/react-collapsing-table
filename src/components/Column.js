@@ -17,7 +17,7 @@ const Column = ({ accessor, label, sortable, onClick, sort, icons }) => {
         className: cssClass
     }
 
-    // Make table header focussable amd add keydown handler, if sorting for the column is enabled
+    // Make table header focussable and add keydown handler, if sorting for the column is enabled
     if (sortable) {
         headerProps = { 
             ...headerProps, 
