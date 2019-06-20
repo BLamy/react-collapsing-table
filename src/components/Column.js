@@ -10,10 +10,24 @@ const Column = ({ accessor, label, sortable, onClick, sort, icons }) => {
     const sortFunction = sortable ? () => onClick({ column: accessor }) : () => {};
     const cssClass = `column-${accessor} ${ sortable ? 'clickable' : '' }`;
 
+    // Prepare properties for the table header
+    let headerProps = {
+        key: accessor,
+        onClick: sortFunction,
+        className: cssClass
+    }
+
+    // Make table header focussable and add keydown handler, if sorting for the column is enabled
+    if (sortable) {
+        headerProps = { 
+            ...headerProps, 
+            onKeyDown: e => { if (e && e.key === "Enter") sortFunction() }, //Handle sorting on 'Enter',
+            tabIndex: 0
+        }
+    }
+
     return (
-            <th key={ accessor }
-                onClick={ sortFunction }
-                className={ cssClass }>{ label }{ icon }</th>
+            <th {...headerProps}>{ label }{ icon }</th>
     );
 };
 
