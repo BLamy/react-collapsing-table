@@ -36,7 +36,8 @@ export class Table extends Component {
             icons = null,
             id = null,
             theme = 'react-collapsible-theme',
-            useContainerWidth = false
+            useContainerWidth = false,
+            search=''
         } = props;
 
         this.state = {
@@ -64,7 +65,8 @@ export class Table extends Component {
             icons,
             id,
             theme,
-            useContainerWidth
+            useContainerWidth,
+            search
         };
 
         this.resizeTable = this.resizeTable.bind(this);
@@ -143,8 +145,8 @@ export class Table extends Component {
             const { sortedColumn, sortedDirection } = changeSortFieldAndDirection({ newColumn: column, state: currentState });
             return { ...currentState, sort: { ...currentState.sort, column: sortedColumn, direction: sortedDirection } };
         }, () => {
-            const { pagination: { currentPage }, sort } = this.state
-            this.props.updateData({ page: currentPage, sort: sort })
+            const { pagination: { currentPage }, sort, search } = this.state
+            this.props.updateData({ page: currentPage, sort: sort, search: search })
         });
     }
 
@@ -153,11 +155,11 @@ export class Table extends Component {
             this.setState(currentState => {
                 return nextPage({ state: currentState })
             });
-            return 
+            return
         }
 
-        const { pagination: { currentPage, totalPages }, sort } = this.state;
-        if (currentPage < totalPages) this.props.updateData({page: currentPage + 1, sort});
+        const { pagination: { currentPage, totalPages }, sort, search } = this.state;
+        if (currentPage < totalPages) this.props.updateData({ page: currentPage + 1, sort, search: search });
 
     };
 
@@ -169,17 +171,22 @@ export class Table extends Component {
             return
         }
 
-        const { pagination: { currentPage }, sort } = this.state;
-        if (currentPage > 1) this.props.updateData({page: currentPage - 1, sort});
+        const { pagination: { currentPage }, sort, search } = this.state;
+        if (currentPage > 1) this.props.updateData({page: currentPage - 1, sort, search: search});
     };
 
     goToPage({ newPage, charCode, target }) {
         const shouldCall = (newPage !== undefined || charCode === ENTER_WAS_PRESSED );
         const pageNumber = newPage === undefined ? target === undefined ? this.state.pagination.currentPage : target.value : newPage;
+        if (!this.props.updateData) {
+            this.setState(currentState => {
+                return goToPage({newPage: pageNumber, state: currentState, shouldCall})
+            });
+            return
+        }
 
-        this.setState(currentState => {
-            return goToPage({newPage: pageNumber, state: currentState, shouldCall})
-        })
+        const { sort, search } = this.state;
+        if (pageNumber > 1) this.props.updateData({ page: pageNumber, sort, search: search });
     }
 
     expandRow({ rowIndex }) {
